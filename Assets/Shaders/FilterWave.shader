@@ -23,11 +23,13 @@
 			fixed4 frag (v2f_img i) : SV_Target
 			{
 				fixed4 col = tex2D(_MainTex, i.uv);
+				// col.rgb = lerp(col, _Color, 0.01 / Luminance(col.rgb));
+				// col.rgb = 0.01 / Luminance(col.rgb);
+
 				float x = i.uv.x;
 				float y = i.uv.y;
 				float wave = 0.01 / abs((y - 0.5) * 10. - sin(x * 10.));
 				col.rgb = lerp(col, _Color, wave);
-
 				return col;
 			}
 			ENDCG
