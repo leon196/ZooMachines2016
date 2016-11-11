@@ -7,11 +7,11 @@
 		_VelocityTexture ("Velocity", 2D) = "white" {}
 		_ElementTexture ("Element", 2D) = "white" {}
 
-		_GlobalSpeed ("Global Speed", Float) = 0.01
+		_GlobalSpeed ("Global Speed", Float) = 0.02
 		_Fade ("Fade", Float) = 0.9
 		_SpeedAttractor ("Speed Attractor", Float) = 1
 		_ScaleAttractor ("Scale Attractor", Float) = 0.05
-		_SpeedNoise ("Speed Noise", Float) = 1
+		_SpeedNoise ("Speed Noise", Float) = 0
 		_ScaleNoise ("Scale Noise", Vector) = (5, 2, 10, 0)
 		_TimeSpeedNoise ("Time Speed Noise", Vector) = (1, 0.1, 0.4, 0)
 	}
@@ -62,7 +62,7 @@
 				// velocity.xyz = burke;
 				// velocity.xyz = aizawa * _SpeedAttractor;
 				// velocity.xyz = arneodo;
-				velocity.xyz += offset * _SpeedNoise * _GlobalSpeed;
+				// velocity.xyz += offset * _SpeedNoise * _GlobalSpeed;
 				// velocity.xyz = normalize(velocity.xyz)* _GlobalSpeed;
 				velocity.xyz *= _Fade;
 				// velocity.xyz = lerp(velocity, dir, step(length(dir), 0.01));

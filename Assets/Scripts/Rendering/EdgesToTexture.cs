@@ -3,26 +3,19 @@ using System.Collections;
 
 public class EdgesToTexture : MonoBehaviour {
 
-	public Mesh mesh;
-	public Texture2D meshTexture;
-	FloatTexture floatTexture;
-	Texture2D colorTexture;
+	private Mesh mesh;
+	private FloatTexture floatTexture;
+	private Texture2D colorTexture;
 	public Texture texture;
 	public Vector3[] vectorArray;
 
 	// Use this for initialization
 	public void Init () {
+		mesh = GetComponent<MeshFilter>().sharedMesh;
 		vectorArray = Draw.GetEdgePointsFromMesh(mesh, 0f);
-		// Vector3[] vectorArray = new Vector3[128];
-		// for (int i = 0; i < vectorArray.Length; ++i) {
-		// 	vectorArray[i] *= 5f;
-		// 	vectorArray[i] = Utils.RandomVector(-10f, 10f);
-			// float angle = ((float)i / (float)vectorArray.Length) * 2f * Mathf.PI;
-			// float radius = 20f;
-			// vectorArray[i] = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle * 10f), Mathf.Sin(angle) * radius);
-		// }
 		floatTexture = new FloatTexture(vectorArray);		
-		// floatTexture.texture.filterMode = FilterMode.Bilinear;
+		texture = floatTexture.texture;
+
 		colorTexture = new Texture2D(floatTexture.resolution, floatTexture.resolution);
 		colorTexture.filterMode = FilterMode.Point;
 		Color[] colorArray = new Color[floatTexture.resolution * floatTexture.resolution];
@@ -30,11 +23,10 @@ public class EdgesToTexture : MonoBehaviour {
 		Vector2[] uvs = mesh.uv;
 		for (int i = 0; i < edgeArray.Length; ++i) {
 			int index = edgeArray[i].i1;
-			colorArray[i] = meshTexture.GetPixelBilinear(uvs[index].x, uvs[index].y);
+			// colorArray[i] = meshTexture.GetPixelBilinear(uvs[index].x, uvs[index].y);
 		}
 		colorTexture.SetPixels(colorArray);
 		colorTexture.Apply();
-		texture = floatTexture.texture;
 	}
 	
 	// Update is called once per frame

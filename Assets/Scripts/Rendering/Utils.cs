@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public static class Utils
 {
@@ -12,6 +13,52 @@ public static class Utils
 		array[r] = tmp;
 		}
 		return array;
+	}
+
+	public static List<GameObject> CreateParticles (int total, Material material)
+	{
+		int verticesMax = 65000;
+		List<GameObject> meshList = new List<GameObject>();
+		int index = 0;
+		// int total = points.Length;
+		while (index < total)
+		{
+			int count = verticesMax;
+			if (total < verticesMax) {
+				count = total;
+			} else if (total > verticesMax && Mathf.Floor(total / verticesMax) == Mathf.Floor(index / verticesMax)) {
+				count = total % verticesMax;
+			}
+
+			Vector3[] vertices = new Vector3[count];
+			Vector3[] normals = new Vector3[count];
+			Color[] colors = new Color[count];
+			int[] indices = new int[count];
+
+			for (int i = 0; i < count && index < total; ++i) {
+				vertices[i] = Utils.RandomVector(-10f, 10f);
+				normals[i] = Vector3.up;
+				colors[i] = Color.black;
+				indices[i] = i;
+				++index;
+			}
+
+			Mesh mesh = new Mesh();
+			mesh.vertices = vertices;
+			mesh.normals = normals;
+			mesh.colors = colors;
+			mesh.SetIndices(indices, MeshTopology.LineStrip, 0);
+			mesh.bounds = new Bounds(Vector3.zero, Vector3.one * 500f);
+
+			GameObject meshGameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			GameObject.Destroy(meshGameObject.GetComponent<Collider>());
+			meshGameObject.GetComponent<MeshFilter>().mesh = mesh;
+			
+			Renderer renderer = meshGameObject.GetComponent<Renderer>();
+			renderer.sharedMaterial = material;
+			meshList.Add(meshGameObject);
+		}
+		return meshList;
 	}
 
 	public static Vector3 RandomVector (float min, float max)
