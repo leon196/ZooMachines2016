@@ -11,6 +11,7 @@ public class FloatTexture
 	public Color[] colorArray;
 	public Texture2D texture;
 	public int resolution;
+	public Vector2 dimension;
 	
 	public FloatTexture (int resolution_)
 	{
@@ -18,6 +19,7 @@ public class FloatTexture
 		texture = new Texture2D(resolution, resolution, TextureFormat.RGBAFloat, false);
 		texture.filterMode = FilterMode.Point;
 		colorArray = new Color[resolution * resolution];
+		dimension = new Vector2(resolution, resolution);
 		PrintEmpty();
 	}
 	
@@ -31,7 +33,18 @@ public class FloatTexture
 		texture = new Texture2D(resolution, resolution, TextureFormat.RGBAFloat, false);
 		texture.filterMode = FilterMode.Point;
 		colorArray = new Color[resolution * resolution];
+		dimension = new Vector2(resolution, resolution);
 		SetupUV(meshArray);
+	}
+	
+	public FloatTexture (Vector3[] array)
+	{
+		resolution = (int)Utils.GetNearestPowerOfTwo(Mathf.Sqrt(array.Length));
+		texture = new Texture2D(resolution, resolution, TextureFormat.RGBAFloat, false);
+		texture.filterMode = FilterMode.Point;
+		colorArray = new Color[resolution * resolution];
+		dimension = new Vector2(resolution, resolution);
+		PrintVectorArray(array);
 	}
 
 	public void PrintPosition (Mesh[] meshArray)
@@ -50,6 +63,20 @@ public class FloatTexture
 					colorArray[vertexIndex].b = p.z;
 					++vertexIndex;
 				}
+			}
+			texture.SetPixels(colorArray);
+			texture.Apply();
+		}
+	}
+
+	public void PrintVectorArray (Vector3[] array)
+	{
+		if (texture != null) {
+			for (int i = 0; i < array.Length; ++i) {
+				Vector3 p = array[i];
+				colorArray[i].r = p.x;
+				colorArray[i].g = p.y;
+				colorArray[i].b = p.z;
 			}
 			texture.SetPixels(colorArray);
 			texture.Apply();
@@ -119,6 +146,20 @@ public class FloatTexture
 				colorArray[i].g = UnityEngine.Random.Range(0f, 1f);
 				colorArray[i].b = UnityEngine.Random.Range(0f, 1f);
 				colorArray[i].a = UnityEngine.Random.Range(0f, 1f);
+			}
+			texture.SetPixels(colorArray);
+			texture.Apply();
+		}
+	}
+
+	public void PrintNoiseInt (int min, int max)
+	{
+		if (texture != null) {
+			for (int i = 0; i < colorArray.Length; ++i) {
+				colorArray[i].r = UnityEngine.Random.Range(min, max);
+				colorArray[i].g = UnityEngine.Random.Range(min, max);
+				// colorArray[i].b = UnityEngine.Random.Range(min, max);
+				// colorArray[i].a = UnityEngine.Random.Range(min, max);
 			}
 			texture.SetPixels(colorArray);
 			texture.Apply();
