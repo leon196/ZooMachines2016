@@ -9,10 +9,20 @@ public class ShaderPass : MonoBehaviour
 	private FrameBuffer frameBuffer;
 	private RenderTexture output;
 
-	public void Setup (int width, int height, Texture2D input)
+	void Start ()
+	{
+		Setup(Screen.width, Screen.height);
+	}
+
+	public void Setup (int width, int height)
 	{
 		Camera.onPreRender += onPreRender;
 		frameBuffer = new FrameBuffer(width, height, 2, RenderTextureFormat.ARGBFloat, FilterMode.Point);
+	}
+	
+	public void Setup (int width, int height, Texture2D input)
+	{
+		Setup(width, height);
 		Print(input);
 	}
 

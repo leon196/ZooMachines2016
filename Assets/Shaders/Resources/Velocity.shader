@@ -62,7 +62,7 @@
 				// velocity.xyz = burke;
 				// velocity.xyz = aizawa * _SpeedAttractor;
 				// velocity.xyz = arneodo;
-				// velocity.xyz = offset * _SpeedNoise;
+				velocity.xyz += offset * _SpeedNoise * _GlobalSpeed;
 				// velocity.xyz *= _Fade;
 				// velocity.xyz = normalize(velocity.xyz);
 				velocity.xyz *= _Fade;

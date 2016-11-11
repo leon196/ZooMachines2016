@@ -13,8 +13,10 @@
 	}
 	SubShader {
 		Tags { "Queue"="AlphaTest" "RenderType"="Transparent" "IgnoreProjector"="True" }
-		Blend One OneMinusSrcAlpha
-		AlphaToMask On
+		// Blend One OneMinusSrcAlpha
+		Blend SrcAlpha OneMinusSrcAlpha 
+		// AlphaToMask On
+		ZTest Off
 		Cull Off
 		LOD 100
 		Pass {
@@ -99,7 +101,7 @@
 				float3 viewDir = normalize(WorldSpaceViewDir(tri[0].vertex));
 				float4 velocity = tex2Dlod(_VelocityTexture, float4(tri[0].texcoord2.xy, 0, 0));
 				float4 element = tex2Dlod(_ElementTexture, float4(tri[0].texcoord2.xy, 0, 0));
-				pIn.color = normalize(velocity + e) * 0.5 + 0.5;
+				// pIn.color = normalize(velocity + e) * 0.5 + 0.5;
 
 				fixed4 original = tex2Dlod(_VertexInitialTexture, float4(tri[0].texcoord2.xy, 0, 0));
 				float3 target = _Target - mul(unity_ObjectToWorld, original);
@@ -122,7 +124,7 @@
 				// float3 cameraFront = normalize(UNITY_MATRIX_IT_MV[2].xyz);
 
 				pIn.color = float4(1,1,1,1);
-				pIn.color.rgb = lerp(_ColorLight, _ColorShadow, dot(tangent, float3(0,1,0)) * 0.5 + 0.5);
+				// pIn.color.rgb = lerp(_ColorLight, _ColorShadow, dot(tangent, float3(0,1,0)) * 0.5 + 0.5);
 
 				pIn.vertex = mul(UNITY_MATRIX_VP, vertex) + float4(-radius * aspect, -radius * 0.55, 0, 0);
 				pIn.texcoord = float2(-0.5,0);
@@ -156,7 +158,8 @@
 				float2 uv = i.texcoord;
 				// uv.y = 1.0 - uv.y;
 				float4 map = tex2D(_MainTex, uv);
-				color.a = step(0.5, map.a);
+				// color.a = step(0.5, map.a) * 0.5;
+				color.a = map.a;
 				return color;
 			}
 			ENDCG

@@ -94,8 +94,8 @@ public class Particles : MonoBehaviour
 
 		// element
 		textureElement = new FloatTexture(meshArray);
-		textureElement.PrintNoise();
-		// textureElement.PrintNoiseInt(0, 10000);
+		// textureElement.PrintNoise();
+		textureElement.PrintNoiseInt(0, 10000);
 		bufferElement = new FrameBuffer(textureElement);
 
 		vertexPass.SetTexture("_VertexInitialTexture", textureVertex.texture);
