@@ -7,7 +7,9 @@
 	}
 	SubShader
 	{
-		Tags { "RenderType"="Opaque" }
+		Tags { "Queue"="AlphaTest" "RenderType"="Transparent" "IgnoreProjector"="True" }
+		Blend SrcAlpha OneMinusSrcAlpha 
+		ZTest Off ZWrite Off
 		LOD 100
 
 		Pass
@@ -48,7 +50,8 @@
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				return _Color;
+				float4 color = _Color;
+				return color;
 			}
 			ENDCG
 		}
