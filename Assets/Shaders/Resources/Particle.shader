@@ -16,7 +16,7 @@
 		// Blend One OneMinusSrcAlpha
 		Blend SrcAlpha OneMinusSrcAlpha 
 		// AlphaToMask On
-		ZTest Off
+		ZTest Off ZWrite Off
 		Cull Off
 		LOD 100
 		Pass {
@@ -34,6 +34,8 @@
 			sampler2D _VertexInitialTexture;
 			sampler2D _VelocityTexture;
 			sampler2D _ElementTexture;
+			sampler2D _EdgeTexture;
+			sampler2D _ColorTexture;
 			float4 _MainTex_ST;
 			float4 _Color;
 			float4 _ColorLight;
@@ -44,6 +46,7 @@
 			float _RespawnDelayOut;
 			float _RespawnNoiseScale;
 			float _RespawnCycle;
+			float2 _ResolutionEdge;
 
 			// Local Transform matrix
 			float4x4 _MatrixWorld;
@@ -101,6 +104,7 @@
 				float3 viewDir = normalize(WorldSpaceViewDir(tri[0].vertex));
 				float4 velocity = tex2Dlod(_VelocityTexture, float4(tri[0].texcoord2.xy, 0, 0));
 				float4 element = tex2Dlod(_ElementTexture, float4(tri[0].texcoord2.xy, 0, 0));
+				float4 position = tex2Dlod(_VertexTexture, float4(tri[0].texcoord2.xy, 0, 0));
 				// pIn.color = normalize(velocity + e) * 0.5 + 0.5;
 
 				fixed4 original = tex2Dlod(_VertexInitialTexture, float4(tri[0].texcoord2.xy, 0, 0));
@@ -110,6 +114,8 @@
 				float4 vertex = mul(unity_ObjectToWorld, tri[0].vertex);
 				float aspect = _ScreenParams.y / _ScreenParams.x;
 				float radius = _Radius;
+
+				radius *= min(1.0, length(position));
 
 				// radius *= lerp(smoothstep(0.0, _RespawnDelayIn, element.r), 1.0, shouldReset);
 				// radius *= lerp(1. - smoothstep(_RespawnDelayOut, 1.0, element.r), 1.0, shouldReset);
@@ -123,7 +129,11 @@
 				// float3 up = normalize(velocity + e) * _Scale.y;// * 4.;
 				// float3 cameraFront = normalize(UNITY_MATRIX_IT_MV[2].xyz);
 
-				pIn.color = float4(1,1,1,1);
+				pIn.color = _Color;
+				// float2 edgeUV = float2(0,0);
+				// edgeUV.x = fmod(element.r, _ResolutionEdge.x) / _ResolutionEdge.x;
+				// edgeUV.y = floor(element.r / _ResolutionEdge.x) / _ResolutionEdge.y;
+				// pIn.color = tex2Dlod(_ColorTexture, float4(edgeUV,0,0));
 				// pIn.color.rgb = lerp(_ColorLight, _ColorShadow, dot(tangent, float3(0,1,0)) * 0.5 + 0.5);
 
 				pIn.vertex = mul(UNITY_MATRIX_VP, vertex) + float4(-radius * aspect, -radius * 0.55, 0, 0);

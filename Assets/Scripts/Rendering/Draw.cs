@@ -483,7 +483,7 @@ public static class Draw
     }
 
 
-    static Edge[] GetEdges(Mesh mesh)
+    public static Edge[] GetEdges(Mesh mesh)
     {
         int[] tris = mesh.triangles;
 

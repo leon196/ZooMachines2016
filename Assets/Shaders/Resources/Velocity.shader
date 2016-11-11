@@ -63,10 +63,9 @@
 				// velocity.xyz = aizawa * _SpeedAttractor;
 				// velocity.xyz = arneodo;
 				velocity.xyz += offset * _SpeedNoise * _GlobalSpeed;
-				// velocity.xyz *= _Fade;
-				// velocity.xyz = normalize(velocity.xyz);
+				// velocity.xyz = normalize(velocity.xyz)* _GlobalSpeed;
 				velocity.xyz *= _Fade;
-				velocity.xyz = lerp(velocity, dir, step(length(dir), 0.1));
+				// velocity.xyz = lerp(velocity, dir, step(length(dir), 0.01));
 				return velocity;
 			}
 			ENDCG

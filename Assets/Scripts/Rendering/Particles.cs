@@ -112,10 +112,11 @@ public class Particles : MonoBehaviour
 		resultVertex = bufferVertex.Apply(vertexPass);
 		resultElement = bufferElement.Apply(elementPass);
 		
-		Camera.onPreRender += onPreRender;
+		// Camera.onPreRender += onPreRender;
 	}
 	
-	public void onPreRender (Camera camera)
+	void Update ()
+	// public void onPreRender (Camera camera)
 	{
 		// for editing shader live
 		if (textureVertex != null) {

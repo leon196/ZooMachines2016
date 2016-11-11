@@ -54,16 +54,6 @@
 				fixed4 original = tex2D(_VertexInitialTexture, i.uv);
 				float3 offset = tex2D(_VelocityTexture, i.uv).xyz;
 
-				float2 previous = i.uv;
-				// previous.x = 1.0 - previous.x;
-				// previous.y = 1.0 - previous.y;
-				float index = floor(i.uv.x * _Resolution.x) + floor(i.uv.y * _Resolution.y) * _Resolution.x;
-				float indexRatio = clamp(index / (_Resolution.x * _Resolution.y), 0.0, 1.0);
-				// float indexRatio = clamp(i.id.x / (_Resolution.x * _Resolution.y), 0.0, 1.0);
-				index -= 1.0;
-				index = fmod(abs(index), _Resolution.x * _Resolution.y);
-				previous.x = fmod(index, _Resolution.x) / _Resolution.x;
-				previous.y = floor(index / _Resolution.x) / _Resolution.y;
 
 				// float2 edgeUV = float2(0,0);
 				// float v = sin(_Time.y + noiseIQ(original) * PI) * 0.5 + 0.5;
