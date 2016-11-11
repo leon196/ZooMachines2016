@@ -7,10 +7,11 @@ public class EdgesToTexture : MonoBehaviour {
 	public Texture2D meshTexture;
 	FloatTexture floatTexture;
 	Texture2D colorTexture;
-	Vector3[] vectorArray;
+	public Texture texture;
+	public Vector3[] vectorArray;
 
 	// Use this for initialization
-	void Start () {
+	public void Init () {
 		vectorArray = Draw.GetEdgePointsFromMesh(mesh, 0f);
 		// Vector3[] vectorArray = new Vector3[128];
 		// for (int i = 0; i < vectorArray.Length; ++i) {
@@ -21,6 +22,7 @@ public class EdgesToTexture : MonoBehaviour {
 			// vectorArray[i] = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle * 10f), Mathf.Sin(angle) * radius);
 		// }
 		floatTexture = new FloatTexture(vectorArray);		
+		// floatTexture.texture.filterMode = FilterMode.Bilinear;
 		colorTexture = new Texture2D(floatTexture.resolution, floatTexture.resolution);
 		colorTexture.filterMode = FilterMode.Point;
 		Color[] colorArray = new Color[floatTexture.resolution * floatTexture.resolution];
@@ -32,6 +34,7 @@ public class EdgesToTexture : MonoBehaviour {
 		}
 		colorTexture.SetPixels(colorArray);
 		colorTexture.Apply();
+		texture = floatTexture.texture;
 	}
 	
 	// Update is called once per frame

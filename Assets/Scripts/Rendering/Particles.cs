@@ -21,6 +21,8 @@ public class Particles : MonoBehaviour
 	private RenderTexture resultVelocity;
 	private RenderTexture resultElement;
 
+	private EdgesToTexture edgesToTexture;
+
 	void Start ()
 	{
 		List<GameObject> particles = CreateParticles(count);
@@ -62,7 +64,7 @@ public class Particles : MonoBehaviour
 			mesh.vertices = vertices;
 			mesh.normals = normals;
 			mesh.colors = colors;
-			mesh.SetIndices(indices, MeshTopology.Points, 0);
+			mesh.SetIndices(indices, MeshTopology.LineStrip, 0);
 			mesh.bounds = new Bounds(Vector3.zero, Vector3.one * 500f);
 
 			GameObject meshGameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -95,7 +97,15 @@ public class Particles : MonoBehaviour
 		// element
 		textureElement = new FloatTexture(meshArray);
 		// textureElement.PrintNoise();
-		textureElement.PrintNoiseInt(0, 10000);
+		// textureElement.PrintNoiseInt(0, 10000);
+		edgesToTexture = GameObject.FindObjectOfType<EdgesToTexture>();
+		edgesToTexture.Init();
+		Vector3[] edges = edgesToTexture.vectorArray;
+		Vector3[] vectorArray = new Vector3[textureElement.resolution * textureElement.resolution];
+		for (int i = 0; i < vectorArray.Length; ++i) {
+			vectorArray[i].x = i % edges.Length;
+		}
+		textureElement.PrintVectorArray(vectorArray);
 		bufferElement = new FrameBuffer(textureElement);
 
 		vertexPass.SetTexture("_VertexInitialTexture", textureVertex.texture);
