@@ -170,6 +170,7 @@
 				float4 map = tex2D(_MainTex, uv);
 				// color.a = step(0.5, map.a) * 0.5;
 				color.a = map.a;
+				color *= _Color;
 				return color;
 			}
 			ENDCG
