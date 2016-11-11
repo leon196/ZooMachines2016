@@ -44,9 +44,9 @@
 				float4 element = tex2D(_ElementTexture, i.uv);
 				float4 e = float4(1,1,1,1) * 0.00001;
 
-				float x = position.x * _ScaleAttractor;
-				float y = position.y * _ScaleAttractor;
-				float z = position.z * _ScaleAttractor;
+				// float x = position.x * _ScaleAttractor;
+				// float y = position.y * _ScaleAttractor;
+				// float z = position.z * _ScaleAttractor;
 
 				float3 offset = float3(0,0,0);
 				offset.x += noiseIQ(position.xyz * _ScaleNoise.x + float3(_Time.y * _TimeSpeedNoise.x,0,0));

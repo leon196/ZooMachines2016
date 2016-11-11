@@ -37,12 +37,14 @@
 			float4 _MainTex_ST;
 			sampler2D _VertexTexture;
 			float4 _Color;
+			float4x4 _Matrix;
 			
 			v2f vert (appdata v)
 			{
 				v2f o;
 				float4 vertex = v.vertex; 
 				vertex.xyz = tex2Dlod(_VertexTexture, float4(v.texcoord2.xy, 0, 0)).rgb;
+				vertex = mul(_Matrix, vertex);
 				o.vertex = UnityObjectToClipPos(vertex);
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				return o;

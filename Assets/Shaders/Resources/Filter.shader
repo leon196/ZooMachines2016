@@ -26,9 +26,10 @@
 
 			fixed4 frag (v2f_img i) : SV_Target
 			{
-				float4 camera = tex2D(_CameraTexture, i.uv);
-				fixed4 col = lerp(camera, tex2D(_MainTex, i.uv), _Fade);
+				fixed4 col = tex2D(_CameraTexture, i.uv);
+				col = lerp(col, tex2D(_MainTex, i.uv), _Fade);
 				// col.rgb += camera.rgb * 0.1;
+				// col.rgb += tex2D(_MainTex, i.uv) * _Fade;
 				return col;
 			}
 			ENDCG

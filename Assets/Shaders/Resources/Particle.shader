@@ -49,7 +49,7 @@
 			float2 _ResolutionEdge;
 
 			// Local Transform matrix
-			float4x4 _MatrixWorld;
+			float4x4 _Matrix;
 
 			float3 _Target;
 			float _TargetRadius;
@@ -85,7 +85,7 @@
 				GS_INPUT o = (GS_INPUT)0;
 				float4 vertex = v.vertex; 
 				vertex.xyz = tex2Dlod(_VertexTexture, float4(v.texcoord2.xy, 0, 0)).rgb;
-				o.vertex = vertex;
+				o.vertex = mul(_Matrix, vertex);
 				o.color = v.color;
 				o.normal = v.normal.xyz;
 				o.texcoord2 = v.texcoord2;
