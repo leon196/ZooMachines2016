@@ -32,5 +32,8 @@ public class TetrisGame : MonoBehaviour
 	{
 		_playerOneGrid.CreateNewGrid (PlayerID.PlayerOne, _palette, _width, _height);
 		_playerTwoGrid.CreateNewGrid (PlayerID.PlayerTwo, _palette, _width, _height);
+
+		_playerOneGrid.SetOpponentGrid (_playerTwoGrid);
+		_playerTwoGrid.SetOpponentGrid (_playerOneGrid);
 	}
 }

@@ -87,6 +87,7 @@ public class TetrisGrid : MonoBehaviour
 		if (_malusLine > 0) 
 		{
 			AddMalusLine (_malusLine);
+			_malusLine = 0;
 			Redraw ();
 		}
 
@@ -327,6 +328,38 @@ public class TetrisGrid : MonoBehaviour
 				}
 			}
 
+			//Better remove lines
+			for (int j = 0; j < (_height-1); j++) 
+			{
+				int gap = 0;
+
+				if (IsLineEmpty (j) == true) 
+				{
+					gap = 1;
+
+					for (int topJ = j + 1; topJ < _height; topJ++)
+					{
+						if (IsLineEmpty (topJ) == true)
+							gap++;
+						else
+							break;
+					}
+
+					int line = j + gap;
+					if (line >= _height) 
+					{
+						line = _height - 1;
+					}
+
+					for (int i = 0; i < _width; i++) 
+					{
+						_grid [i] [j].fill = _grid [i] [line].fill;
+						_grid [i] [line].fill = 0;
+					}
+				}
+			}
+
+			/*
 			int lowerJ = Mathf.Min (lineToDelete.ToArray ());
 
 			for (int j = lowerJ; j < _height-1; j++) 
@@ -337,6 +370,7 @@ public class TetrisGrid : MonoBehaviour
 					_grid [i] [j + 1].fill	=	0;
 				}
 			}
+			*/
 
 			if (_opponentGrid != null) 
 			{
@@ -438,5 +472,13 @@ public class TetrisGrid : MonoBehaviour
 	private void OnDestroy()
 	{
 		MidiMaster.knobDelegate = null;
+	}
+
+	private bool IsLineEmpty (int line)
+	{
+		for (int i = 0; i < _width; i++)
+			if (_grid [i] [line].fill > 0)
+				return false;
+		return true;
 	}
 }
