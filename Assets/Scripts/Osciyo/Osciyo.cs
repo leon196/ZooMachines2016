@@ -27,15 +27,22 @@ public class Osciyo : MonoBehaviour
 		foreach (MeshFilter meshFilter in meshFilterArray) {
 			Mesh mesh = meshFilter.sharedMesh;
 			Renderer renderer = rendererArray[r];
+			Material material = renderer.material;
 			Transform t = meshFilter.transform;
+			Texture2D texture = (material.mainTexture as Texture2D);
+			Vector2[] uvs = mesh.uv;
 			Vector3[] edges = Draw.GetEdgePointsFromMesh(mesh, 0f);
-			// Draw.Edge[] indices = Draw.GetEdges(mesh);
-			// int index = 0;
+			Draw.Edge[] indices = Draw.GetEdges(mesh);
+			int index = 0;
 			foreach (Vector3 point in edges) {
 				list.Add(t.TransformPoint(point));
-				colorList.Add(rendererArray[r].material.color);
-				// colorList.Add(new Color(Random.Range(0f,1f),Random.Range(0f,1f),Random.Range(0f,1f)));
-        // ++index;
+				Color color = rendererArray[r].material.color;
+				// if (texture != null) {
+				// 	Vector2 uv = uvs[indices[0].i1];
+				// 	color *= texture.GetPixelBilinear(uv.x, uv.y);
+				// }
+				colorList.Add(color);
+        ++index;
 			}
 			renderer.enabled = false;
 			++r;
