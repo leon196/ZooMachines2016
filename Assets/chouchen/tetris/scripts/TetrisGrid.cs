@@ -5,6 +5,10 @@ using MidiJack;
 
 public class TetrisGrid : MonoBehaviour 
 {	
+
+	[SerializeField]
+	private Material		particleMaterial		= null;
+
 	[SerializeField]
 	private TetrisCube		_tetrisCubePrefab		= null;
 
@@ -35,6 +39,8 @@ public class TetrisGrid : MonoBehaviour
 
 	private TetrisGrid		_opponentGrid			= null;
 
+	private Osciyo osciyo;
+
 	public void CreateNewGrid (PlayerID playerId, TetrisColorPalette palette, int width, int height)
 	{
 		// Create Grid Array
@@ -49,6 +55,8 @@ public class TetrisGrid : MonoBehaviour
 		_height			= height;
 		_playerId 		= playerId;
 
+		List<Vector3> points = new List<Vector3>();
+
 		// Populate Grid with Cube prefab
 		for (int i = 0; i < width; i++) 
 		{
@@ -59,12 +67,25 @@ public class TetrisGrid : MonoBehaviour
 
 				tetrisCube.transform.parent			= transform;
 				tetrisCube.transform.localPosition	= new Vector3 (i, j, 0);
+				tetrisCube.GetComponent<Renderer>().enabled = false;
+
+				Vector3 origin = transform.position;
+				transform.position = Vector3.zero;
+				Vector3[] edges = Draw.GetEdgePointsFromMesh(tetrisCube.GetComponent<MeshFilter>().sharedMesh, 0f);
+				for (int e = 0; e < edges.Length; ++e) {
+					points.Add(tetrisCube.transform.TransformPoint(edges[e]));
+				}
+				transform.position = origin;
 
 				tetrisCube.SetPalette (palette);
 
 				_grid [i][j] = tetrisCube;
 			}
 		}
+
+		gameObject.AddComponent<Osciyo>();
+		gameObject.GetComponent<Osciyo>().material = particleMaterial;
+		gameObject.GetComponent<Osciyo>().Init(points);
 
 		//
 		_timeToFall = Time.time + _fallDelay;

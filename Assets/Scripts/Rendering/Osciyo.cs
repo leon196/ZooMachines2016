@@ -7,6 +7,7 @@ public class Osciyo : MonoBehaviour
 	public int lod = 1;
 	public Material material;
 	public float speed = 0.02f;
+	public float speedNoise = 0.0f;
 	[Range(0,1)] public float damping = 0.9f;
 	private Pass position;
 	private Pass velocity;
@@ -14,7 +15,7 @@ public class Osciyo : MonoBehaviour
 	private FloatTexture edgeTexture;
 	private Vector3[] edgePositionArray;
 
-	void Start ()
+	public void Init ()
 	{
 		Mesh mesh = GetComponent<MeshFilter>().sharedMesh;
 		edgePositionArray = Draw.GetEdgePointsFromMesh(mesh, 0f);
@@ -23,6 +24,19 @@ public class Osciyo : MonoBehaviour
 		Vector3[] points = mesh.vertices;
 		GetComponent<Renderer>().enabled = false;
 		List<GameObject> particles = Utils.CreateParticles(points.Length * lod, material);
+		Mesh[] meshArray = new Mesh[particles.Count];
+		for (int i = 0; i < particles.Count; ++i) {
+			meshArray[i] = particles[i].GetComponent<MeshFilter>().sharedMesh;
+		}
+		Init(meshArray);
+	}
+
+	public void Init (List<Vector3> list)
+	{
+		edgePositionArray = list.ToArray();
+		edgeTexture = new FloatTexture(list.ToArray());		
+
+		List<GameObject> particles = Utils.CreateParticles(list.Count * lod, material);
 		Mesh[] meshArray = new Mesh[particles.Count];
 		for (int i = 0; i < particles.Count; ++i) {
 			meshArray[i] = particles[i].GetComponent<MeshFilter>().sharedMesh;
@@ -80,6 +94,7 @@ public class Osciyo : MonoBehaviour
 		velocity.material.SetTexture("_VertexTexture", position.result);
 		velocity.material.SetTexture("_ElementTexture", element.result);
 		velocity.material.SetFloat("_GlobalSpeed", speed);
+		velocity.material.SetFloat("_SpeedNoise", speedNoise);
 		velocity.material.SetFloat("_Fade", damping);
 		material.SetTexture("_VelocityTexture", velocity.result);
 

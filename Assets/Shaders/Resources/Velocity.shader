@@ -49,9 +49,9 @@
 				// float z = position.z * _ScaleAttractor;
 
 				float3 offset = float3(0,0,0);
-				offset.x += noiseIQ(position.xyz * _ScaleNoise.x + float3(_Time.y * _TimeSpeedNoise.x,0,0));
-				offset.y += noiseIQ(position.xyz * _ScaleNoise.y + float3(_Time.y * _TimeSpeedNoise.y,0,0));
-				offset.z += noiseIQ(position.xyz * _ScaleNoise.z + float3(_Time.y * _TimeSpeedNoise.z,0,0));
+				offset.x += noiseIQ(position.xyz * _ScaleNoise.x + float3(_Time.y * _TimeSpeedNoise.x,0,0)) * 2. - 1.;
+				offset.y += noiseIQ(position.xyz * _ScaleNoise.y + float3(_Time.y * _TimeSpeedNoise.y,0,0)) * 2. - 1.;
+				offset.z += noiseIQ(position.xyz * _ScaleNoise.z + float3(_Time.y * _TimeSpeedNoise.z,0,0)) * 2. - 1.;
 
 				float2 edgeUV = float2(0,0);
 				edgeUV.x = fmod(element.r, _ResolutionEdge.x) / _ResolutionEdge.x;
@@ -62,7 +62,7 @@
 				// velocity.xyz = burke;
 				// velocity.xyz = aizawa * _SpeedAttractor;
 				// velocity.xyz = arneodo;
-				// velocity.xyz += offset * _SpeedNoise * _GlobalSpeed;
+				velocity.xyz += offset * _SpeedNoise;
 				// velocity.xyz = normalize(velocity.xyz)* _GlobalSpeed;
 				velocity.xyz *= _Fade;
 				// velocity.xyz = lerp(velocity, dir, step(length(dir), 0.01));
