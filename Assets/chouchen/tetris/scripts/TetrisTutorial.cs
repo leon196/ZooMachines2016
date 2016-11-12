@@ -129,14 +129,14 @@ public class TetrisTutorial : MonoBehaviour
 	{
 		yield return null;
 		_rotationText.gameObject.SetActive (true);
-		yield return new WaitForSeconds (2f);
-		_rotationText.gameObject.SetActive (false);
-		_movementText.gameObject.SetActive (true);
-		yield return new WaitForSeconds (2f);
-		_movementText.gameObject.SetActive (false);
-		_fallText.gameObject.SetActive (true);
-		yield return new WaitForSeconds (2f);
-		_fallText.gameObject.SetActive (false);
+		// yield return new WaitForSeconds (2f);
+		// _rotationText.gameObject.SetActive (false);
+		// _movementText.gameObject.SetActive (true);
+		// yield return new WaitForSeconds (2f);
+		// _movementText.gameObject.SetActive (false);
+		// _fallText.gameObject.SetActive (true);
+		// yield return new WaitForSeconds (2f);
+		// _fallText.gameObject.SetActive (false);
 
 		// GameObject.FindObjectOfType<TetrisGame> ().TutorialIsOver ();
 	}

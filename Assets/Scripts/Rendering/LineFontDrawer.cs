@@ -161,15 +161,15 @@ public class LineFontDrawer : MonoBehaviour
 
     public Material lineMaterial;
 
-    void OnPostRender()
+    void OnRenderObject()
     {
         lineMaterial.SetPass(0);
-        GL.PushMatrix();
+        // GL.PushMatrix();
         GL.Begin(GL.LINES);
 
         DrawFontTest();
 
         GL.End();
-        GL.PopMatrix();
+        // GL.PopMatrix();
     }
 }
