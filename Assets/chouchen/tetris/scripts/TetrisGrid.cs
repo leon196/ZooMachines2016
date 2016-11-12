@@ -35,6 +35,8 @@ public class TetrisGrid : MonoBehaviour
 
 	private TetrisGrid		_opponentGrid			= null;
 
+	private bool			_cleanMidiDelegate		= false;
+
 	public void CreateNewGrid (PlayerID playerId, TetrisColorPalette palette, int width, int height)
 	{
 		// Create Grid Array
@@ -73,6 +75,7 @@ public class TetrisGrid : MonoBehaviour
 		AddShape ();
 
 		MidiMaster.knobDelegate += knobChanged;
+		_cleanMidiDelegate = true;
 	}
 
 	public void SetOpponentGrid (TetrisGrid opponentGrid)
@@ -471,7 +474,8 @@ public class TetrisGrid : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		MidiMaster.knobDelegate = null;
+		if (_cleanMidiDelegate == true)
+			MidiMaster.knobDelegate = null;
 	}
 
 	private bool IsLineEmpty (int line)
