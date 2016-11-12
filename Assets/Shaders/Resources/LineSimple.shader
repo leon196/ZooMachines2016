@@ -36,7 +36,10 @@
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 			sampler2D _VertexTexture;
+			sampler2D _ColorTexture;
+			sampler2D _ElementTexture;
 			float4 _Color;
+			float2 _ResolutionEdge;
 			float4x4 _Matrix;
 			
 			v2f vert (appdata v)
@@ -53,6 +56,13 @@
 			fixed4 frag (v2f i) : SV_Target
 			{
 				float4 color = _Color;
+				// float4 element = tex2D(_ElementTexture, i.uv);
+
+				// float2 edgeUV = float2(0,0);
+				// edgeUV.x = fmod(element.r, _ResolutionEdge.x) / _ResolutionEdge.x;
+				// edgeUV.y = floor(element.r / _ResolutionEdge.x) / _ResolutionEdge.y;
+
+				// color *= tex2D(_ColorTexture, edgeUV);
 				return color;
 			}
 			ENDCG

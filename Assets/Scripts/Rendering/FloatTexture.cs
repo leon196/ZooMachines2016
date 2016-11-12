@@ -125,6 +125,20 @@ public class FloatTexture
 		}
 	}
 
+	public void PrintColor (Color[] array)
+	{
+		if (texture != null) {
+			for (int i = 0; i < array.Length; ++i) {
+				colorArray[i].r = array[i].r;
+				colorArray[i].g = array[i].g;
+				colorArray[i].b = array[i].b;
+				colorArray[i].a = array[i].a;
+			}
+			texture.SetPixels(colorArray);
+			texture.Apply();
+		}
+	}
+
 	public void PrintEmpty ()
 	{
 		if (texture != null) {
