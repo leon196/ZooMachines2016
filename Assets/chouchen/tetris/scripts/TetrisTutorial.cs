@@ -41,19 +41,19 @@ public class TetrisTutorial : MonoBehaviour
 	[SerializeField]
 	private ShapeDecoration	_playerTwoShapeO	= null;
 	[SerializeField]
-	private Text			_movementText 		= null;
+	private GameObject			_movementText 		= null;
 	[SerializeField]
-	private Text			_rotationText 		= null;
+	private GameObject			_rotationText 		= null;
 	[SerializeField]
-	private Text			_fallText			= null;
+	private GameObject			_fallText			= null;
 
 	private MidiController	_midiController		= null;
 
 	public void Awake ()
 	{
-		_movementText.gameObject.SetActive (false);
-		_rotationText.gameObject.SetActive (false);
-		_fallText.gameObject.SetActive (false);
+		_movementText.SetActive (false);
+		_rotationText.SetActive (false);
+		_fallText.SetActive (false);
 	}
 	
 	public void Start ()
@@ -128,16 +128,16 @@ public class TetrisTutorial : MonoBehaviour
 	IEnumerator PlayTutorial ()
 	{
 		yield return null;
-		_rotationText.gameObject.SetActive (true);
-		// yield return new WaitForSeconds (2f);
-		// _rotationText.gameObject.SetActive (false);
-		// _movementText.gameObject.SetActive (true);
-		// yield return new WaitForSeconds (2f);
-		// _movementText.gameObject.SetActive (false);
-		// _fallText.gameObject.SetActive (true);
-		// yield return new WaitForSeconds (2f);
-		// _fallText.gameObject.SetActive (false);
+		_rotationText.SetActive (true);
+		yield return new WaitForSeconds (2f);
+		_rotationText.SetActive (false);
+		_movementText.SetActive (true);
+		yield return new WaitForSeconds (2f);
+		_movementText.SetActive (false);
+		_fallText.SetActive (true);
+		yield return new WaitForSeconds (2f);
+		_fallText.SetActive (false);
 
-		// GameObject.FindObjectOfType<TetrisGame> ().TutorialIsOver ();
+		GameObject.FindObjectOfType<TetrisGame> ().TutorialIsOver ();
 	}
 }

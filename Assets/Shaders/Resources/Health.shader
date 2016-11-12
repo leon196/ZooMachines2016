@@ -22,6 +22,7 @@
 			sampler2D _ElementTexture;
 			sampler2D _EdgeTexture;
 			float2 _ResolutionEdge;
+			float _EdgeCount;
 
 			fixed4 frag (v2f_img i) : SV_Target {
 				fixed4 element = tex2D(_MainTex, i.uv);
@@ -31,8 +32,9 @@
 				currentUV.y = floor(element.r / _ResolutionEdge.x) / _ResolutionEdge.y;
 				float3 currentTarget = tex2D(_EdgeTexture, currentUV);
 				float should = step(distance(position, currentTarget), 0.1);
+				// should = lerp(should, 1, step(length(currentTarget), 0.1));
 				element.r += lerp(0, 1, should);
-				element.r = fmod(element.r, _ResolutionEdge.x * _ResolutionEdge.y);
+				element.r = fmod(element.r, _EdgeCount);//_ResolutionEdge.x * _ResolutionEdge.y);
 				// element.r = 1.0;
 				// element.gb = 0.0;
 				return element;

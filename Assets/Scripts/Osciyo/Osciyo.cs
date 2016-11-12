@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Osciyo : MonoBehaviour
 {
-	public int lod = 2;
+	public int lod = 3;
 	public Material material;
 	public float speed = 0.8f;
 	public float speedNoise = 0.0f;
@@ -16,6 +16,7 @@ public class Osciyo : MonoBehaviour
 	private FloatTexture colorTexture;
 	private Vector3[] edgePositionArray;
 	private Color[] colorArray;
+	private int edgeCount;
 
 	public void Init ()
 	{
@@ -37,10 +38,6 @@ public class Osciyo : MonoBehaviour
 			foreach (Vector3 point in edges) {
 				list.Add(t.TransformPoint(point));
 				Color color = rendererArray[r].material.color;
-				// if (texture != null) {
-				// 	Vector2 uv = uvs[indices[0].i1];
-				// 	color *= texture.GetPixelBilinear(uv.x, uv.y);
-				// }
 				colorList.Add(color);
         ++index;
 			}
@@ -54,6 +51,7 @@ public class Osciyo : MonoBehaviour
 	public void Init (List<Vector3> list)
 	{
 		edgePositionArray = list.ToArray();
+		edgeCount = edgePositionArray.Length;
 		edgeTexture = new FloatTexture(edgePositionArray);		
 		colorTexture = new FloatTexture(edgeTexture.resolution);
 		colorTexture.PrintColor(colorArray);
@@ -62,6 +60,7 @@ public class Osciyo : MonoBehaviour
 		Mesh[] meshArray = new Mesh[particles.Count];
 		for (int i = 0; i < particles.Count; ++i) {
 			meshArray[i] = particles[i].GetComponent<MeshFilter>().sharedMesh;
+			particles[i].transform.parent = transform;
 		}
 		Init(meshArray);
 	}
@@ -112,6 +111,11 @@ public class Osciyo : MonoBehaviour
 			velocity.material.SetTexture("_EdgeTexture", edgeTexture.texture);
 			element.material.SetTexture("_EdgeTexture", edgeTexture.texture);
 			material.SetTexture("_EdgeTexture", edgeTexture.texture);
+
+			position.material.SetFloat("_EdgeCount", edgeCount);
+			velocity.material.SetFloat("_EdgeCount", edgeCount);
+			element.material.SetFloat("_EdgeCount", edgeCount);
+			material.SetFloat("_EdgeCount", edgeCount);
 
 			position.material.SetTexture("_ColorTexture", colorTexture.texture);
 			velocity.material.SetTexture("_ColorTexture", colorTexture.texture);

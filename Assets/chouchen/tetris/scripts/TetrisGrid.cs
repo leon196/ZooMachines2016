@@ -86,7 +86,7 @@ public class TetrisGrid : MonoBehaviour
 
 		gameObject.AddComponent<Osciyo>();
 		gameObject.GetComponent<Osciyo>().material = particleMaterial;
-		gameObject.GetComponent<Osciyo>().Init(points);
+		gameObject.GetComponent<Osciyo>().Init();
 
 		//
 		_timeToFall = Time.time + _fallDelay;
