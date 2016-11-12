@@ -46,8 +46,12 @@ public class TetrisTutorial : MonoBehaviour
 	private GameObject			_rotationText 		= null;
 	[SerializeField]
 	private GameObject			_fallText			= null;
+	[SerializeField]
+	private GameObject			_outSyncText 		= null;
 
 	private MidiController	_midiController		= null;
+
+	public bool isinit { get; set; }
 
 	public void Awake ()
 	{
@@ -127,6 +131,11 @@ public class TetrisTutorial : MonoBehaviour
 
 	IEnumerator PlayTutorial ()
 	{
+		_rotationText.SetActive (false);
+		_movementText.SetActive (false);
+		_fallText.SetActive (false);
+		_outSyncText.SetActive (false);
+
 		yield return null;
 		_rotationText.SetActive (true);
 		yield return new WaitForSeconds (2f);
@@ -139,5 +148,21 @@ public class TetrisTutorial : MonoBehaviour
 		_fallText.SetActive (false);
 
 		GameObject.FindObjectOfType<TetrisGame> ().TutorialIsOver ();
+	}
+
+	public void LaunchSpecialTutorial ()
+	{
+		StartCoroutine (PlaySpecialTutorial ());
+	}
+
+	IEnumerator PlaySpecialTutorial ()
+	{
+		_rotationText.SetActive (false);
+		_movementText.SetActive (false);
+		_fallText.SetActive (false);
+		_outSyncText.SetActive (true);
+		yield return new WaitForSeconds (4f);
+
+		GameObject.FindObjectOfType<TetrisGame> ().SpecialTutorialIsOver ();
 	}
 }
