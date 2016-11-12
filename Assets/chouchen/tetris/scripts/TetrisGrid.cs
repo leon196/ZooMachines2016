@@ -84,9 +84,6 @@ public class TetrisGrid : MonoBehaviour
 
 		//
 		AddShape ();
-
-		MidiMaster.knobDelegate += knobChanged;
-		_cleanMidiDelegate = true;
 	}
 
 	public void RestartGrid ()
@@ -94,8 +91,6 @@ public class TetrisGrid : MonoBehaviour
 		_timeToFall = Time.time + _fallDelay;	
 		gameIsStop = false;
 		AddShape ();
-		//MidiMaster.knobDelegate += knobChanged;
-		//_cleanMidiDelegate = true;
 	}
 
 	public void SetOpponentGrid (TetrisGrid opponentGrid)
@@ -545,9 +540,6 @@ public class TetrisGrid : MonoBehaviour
 				}
 			}
 		}
-
-		MidiMaster.knobDelegate -= knobChanged;
-		_cleanMidiDelegate = false;
 
 		_currentShape = null;
 	}

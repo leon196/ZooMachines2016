@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using MidiJack;
 
 public class TetrisGame : MonoBehaviour 
 {
@@ -50,6 +51,23 @@ public class TetrisGame : MonoBehaviour
 	void Start ()
 	{
 		InitializeTutorial ();
+
+		MidiMaster.knobDelegate += knobChanged;
+	}
+
+	public void knobChanged (MidiChannel channel, int  knobNumber, float knobValue)
+	{
+		if (_playerOneGrid != null)
+			_playerOneGrid.knobChanged (channel, knobNumber, knobValue);
+
+		if (_playerTwoGrid != null)
+			_playerTwoGrid.knobChanged (channel, knobNumber, knobValue);
+
+		if (_playerOneSpecialGrid != null && _specialGridRoot.activeSelf == true)
+			_playerOneSpecialGrid.knobChanged (channel, knobNumber, knobValue);
+
+		if (_playerTwoSpecialGrid != null && _specialGridRoot.activeSelf == true)
+			_playerTwoSpecialGrid.knobChanged (channel, knobNumber, knobValue);
 	}
 
 	private void InitializeTutorial ()
@@ -77,7 +95,7 @@ public class TetrisGame : MonoBehaviour
 	public void TutorialIsOver ()
 	{
 		_tutorial.gameObject.SetActive (false);
-
+		Debug.Log ("tuto is over");
 		InitializeGame ();
 	}
 
@@ -90,6 +108,7 @@ public class TetrisGame : MonoBehaviour
 			_playerOneGrid.SetOpponentGrid (_playerTwoGrid);
 			_playerTwoGrid.SetOpponentGrid (_playerOneGrid);
 		} else {
+			Debug.Log ("active game");
 			_gridRoot.gameObject.SetActive (true);
 			_playerOneGrid.RestartGrid ();
 			_playerTwoGrid.RestartGrid ();
@@ -165,9 +184,13 @@ public class TetrisGame : MonoBehaviour
 
 	public bool CheckKeyDown (int key)
 	{
-		//Debug.Log ("key " + key + " : " + MidiJack.MidiMaster.GetKey (key));
-		if (MidiJack.MidiMaster.GetKeyDown (key))
+		if (MidiMaster.GetKeyDown (key))
 			return true;
 		return false;
+	}
+
+	void OnDestroy()
+	{
+		MidiMaster.knobDelegate = null;
 	}
 }

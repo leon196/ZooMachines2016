@@ -112,13 +112,6 @@ public class TetrisSpecialGrid : MonoBehaviour
 		_currentShapes[3] = AddShape (_shapePositions [3], TetrisShapeEnum.ShapeI);
 
 		_currentHorizontalKnob = new float[4];
-
-		for (int i = 0; i < 4; i++) {
-			MoveInputDetected (MidiMaster.GetKnob (_horizontalMoveKey [(int)playerId] [i]), i);
-		}
-
-		MidiMaster.knobDelegate += knobChanged;
-		_cleanMidiDelegate = true;
 	}
 
 	public void SetOpponentGrid (TetrisSpecialGrid opponentGrid)
@@ -299,12 +292,6 @@ public class TetrisSpecialGrid : MonoBehaviour
 		for (int i = 0; i < _width; i++)
 			for (int j = 0; j < _height; j++)
 				_grid [i] [j].fill = 0;
-
-		if (_cleanMidiDelegate == true) 
-		{
-			_cleanMidiDelegate = false;
-			MidiMaster.knobDelegate -= knobChanged;
-		}
 	}
 
 	public void LockShape ()
@@ -497,16 +484,7 @@ public class TetrisSpecialGrid : MonoBehaviour
 	{
 		//_malusLine = malusLineCount;
 	}
-
-	private void OnDestroy()
-	{
-		if (_cleanMidiDelegate == true) 
-		{
-			_cleanMidiDelegate = false;
-			MidiMaster.knobDelegate -= knobChanged;
-		}
-	}
-
+		
 	private bool IsLineEmpty (int line)
 	{
 		for (int i = 0; i < _width; i++)
