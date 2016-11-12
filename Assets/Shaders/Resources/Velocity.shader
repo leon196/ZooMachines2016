@@ -54,6 +54,7 @@
 				offset.z += noiseIQ(position.xyz * _ScaleNoise.z + float3(_Time.y * _TimeSpeedNoise.z,0,0)) * 2. - 1.;
 
 				float2 edgeUV = float2(0,0);
+				// element.r = fmod(abs(element.r) - 2, _ResolutionEdge.x * _ResolutionEdge.y);
 				edgeUV.x = fmod(element.r, _ResolutionEdge.x) / _ResolutionEdge.x;
 				edgeUV.y = floor(element.r / _ResolutionEdge.x) / _ResolutionEdge.y;
 

@@ -50,7 +50,7 @@
 
 			fixed4 frag (v2f i) : SV_Target {
 				fixed4 position = tex2D(_MainTex, i.uv);
-				fixed4 element = tex2D(_ElementTexture, i.uv);
+				// fixed4 element = tex2D(_ElementTexture, i.uv);
 				fixed4 original = tex2D(_VertexInitialTexture, i.uv);
 				float3 offset = tex2D(_VelocityTexture, i.uv).xyz;
 
