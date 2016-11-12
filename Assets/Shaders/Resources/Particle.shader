@@ -10,6 +10,7 @@
 		_VertexInitialTexture ("Vertex Initial (RGB)", 2D) = "white" {}
 		_VelocityTexture ("Velocity (RGB)", 2D) = "white" {}
 		_Scale ("Scale", Vector) = (1,1,1,1)
+		_ColorTexture ("Color", 2D) = "white" {}
 	}
 	SubShader {
 		Tags { "Queue"="AlphaTest" "RenderType"="Transparent" "IgnoreProjector"="True" }
@@ -128,8 +129,11 @@
 				// float3 up = normalize(vertex - target);
 				// float3 up = normalize(velocity + e) * _Scale.y;// * 4.;
 				// float3 cameraFront = normalize(UNITY_MATRIX_IT_MV[2].xyz);
+				float2 edgeUV = float2(0,0);
+				edgeUV.x = fmod(element.r, _ResolutionEdge.x) / _ResolutionEdge.x;
+				edgeUV.y = floor(element.r / _ResolutionEdge.x) / _ResolutionEdge.y;
 
-				pIn.color = _Color;
+				pIn.color = _Color * tex2Dlod(_ColorTexture, float4(edgeUV,0,0));
 				// float2 edgeUV = float2(0,0);
 				// edgeUV.x = fmod(element.r, _ResolutionEdge.x) / _ResolutionEdge.x;
 				// edgeUV.y = floor(element.r / _ResolutionEdge.x) / _ResolutionEdge.y;

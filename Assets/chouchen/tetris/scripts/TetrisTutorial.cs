@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class TetrisTutorial : MonoBehaviour 
 {	
 	[SerializeField]
+	public Material _material	= null;
+	[SerializeField]
 	private GameObject _midiControllerPrefab	= null;
 	[SerializeField]
 	private Transform  _midiControllerSpawn		= null;
@@ -39,13 +41,13 @@ public class TetrisTutorial : MonoBehaviour
 	[SerializeField]
 	private ShapeDecoration	_playerTwoShapeO	= null;
 	[SerializeField]
-	private Text			_movementText 		= null;
+	private GameObject			_movementText 		= null;
 	[SerializeField]
-	private Text			_rotationText 		= null;
+	private GameObject			_rotationText 		= null;
 	[SerializeField]
-	private Text			_fallText			= null;
+	private GameObject			_fallText			= null;
 	[SerializeField]
-	private Text			_outSyncText 		= null;
+	private GameObject			_outSyncText 		= null;
 
 	private MidiController	_midiController		= null;
 
@@ -53,9 +55,15 @@ public class TetrisTutorial : MonoBehaviour
 
 	public void Awake ()
 	{
-		_movementText.gameObject.SetActive (false);
-		_rotationText.gameObject.SetActive (false);
-		_fallText.gameObject.SetActive (false);
+		_movementText.SetActive (false);
+		_rotationText.SetActive (false);
+		_fallText.SetActive (false);
+	}
+	
+	public void Start ()
+	{
+		gameObject.AddComponent<Osciyo>();
+		gameObject.GetComponent<Osciyo>().material = _material;
 	}
 
 	// Use this for initialization
@@ -67,6 +75,12 @@ public class TetrisTutorial : MonoBehaviour
 		midiControllerGo.transform.localRotation = Quaternion.identity;
 
 		_midiController = midiControllerGo.AddComponent<MidiController> ();
+		// midiControllerGo.GetComponent<Osciyo>().Init();
+
+		// Renderer[] rendererArray = midiControllerGo.GetComponentsInChildren<Renderer>();
+		// foreach (Renderer renderer in rendererArray) {
+		// 	renderer.enabled = false;
+		// }
 	}
 
 	public void ConstructTetrisShape (PlayerID playerId, TetrisShapeEnum shapeEnum, TetrisCube cube, TetrisColorPalette palette)
@@ -111,26 +125,27 @@ public class TetrisTutorial : MonoBehaviour
 
 	public void LaunchTutorial ()
 	{
+		gameObject.GetComponent<Osciyo>().Init();
 		StartCoroutine (PlayTutorial());
 	}
 
 	IEnumerator PlayTutorial ()
 	{
-		_rotationText.gameObject.SetActive (false);
-		_movementText.gameObject.SetActive (false);
-		_fallText.gameObject.SetActive (false);
-		_outSyncText.gameObject.SetActive (false);
+		_rotationText.SetActive (false);
+		_movementText.SetActive (false);
+		_fallText.SetActive (false);
+		_outSyncText.SetActive (false);
 
 		yield return null;
-		_rotationText.gameObject.SetActive (true);
+		_rotationText.SetActive (true);
 		yield return new WaitForSeconds (2f);
-		_rotationText.gameObject.SetActive (false);
-		_movementText.gameObject.SetActive (true);
+		_rotationText.SetActive (false);
+		_movementText.SetActive (true);
 		yield return new WaitForSeconds (2f);
-		_movementText.gameObject.SetActive (false);
-		_fallText.gameObject.SetActive (true);
+		_movementText.SetActive (false);
+		_fallText.SetActive (true);
 		yield return new WaitForSeconds (2f);
-		_fallText.gameObject.SetActive (false);
+		_fallText.SetActive (false);
 
 		GameObject.FindObjectOfType<TetrisGame> ().TutorialIsOver ();
 	}
@@ -142,10 +157,10 @@ public class TetrisTutorial : MonoBehaviour
 
 	IEnumerator PlaySpecialTutorial ()
 	{
-		_rotationText.gameObject.SetActive (false);
-		_movementText.gameObject.SetActive (false);
-		_fallText.gameObject.SetActive (false);
-		_outSyncText.gameObject.SetActive (true);
+		_rotationText.SetActive (false);
+		_movementText.SetActive (false);
+		_fallText.SetActive (false);
+		_outSyncText.SetActive (true);
 		yield return new WaitForSeconds (4f);
 
 		GameObject.FindObjectOfType<TetrisGame> ().SpecialTutorialIsOver ();

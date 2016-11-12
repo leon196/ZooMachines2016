@@ -5,6 +5,10 @@ using MidiJack;
 
 public class TetrisGrid : MonoBehaviour 
 {	
+
+	[SerializeField]
+	private Material		particleMaterial		= null;
+
 	[SerializeField]
 	private TetrisCube		_tetrisCubePrefab		= null;
 
@@ -37,6 +41,7 @@ public class TetrisGrid : MonoBehaviour
 
 	private TetrisGrid		_opponentGrid			= null;
 
+	private Osciyo osciyo;
 	private bool			_cleanMidiDelegate		= false;
 
 	public bool 			isInit
@@ -62,6 +67,12 @@ public class TetrisGrid : MonoBehaviour
 		_height			= height;
 		_playerId 		= playerId;
 
+		gameObject.AddComponent<Osciyo>();
+		osciyo = gameObject.GetComponent<Osciyo>();
+		int osciyoIndex = 0;
+
+		List<Vector3> points = new List<Vector3>();
+
 		// Populate Grid with Cube prefab
 		for (int i = 0; i < width; i++) 
 		{
@@ -72,12 +83,34 @@ public class TetrisGrid : MonoBehaviour
 
 				tetrisCube.transform.parent			= transform;
 				tetrisCube.transform.localPosition	= new Vector3 (i, j, 0);
+				tetrisCube.GetComponent<Renderer>().enabled = false;
+
+				Vector3 origin = transform.position;
+				transform.position = Vector3.zero;
+				// List<Vector3> tmp = new List<Vector3>();
+				Vector3[] edges = Draw.GetEdgePointsFromMesh(tetrisCube.GetComponent<MeshFilter>().sharedMesh, 0f);
+				int[] osciyoIndices = new int[edges.Length];
+				for (int e = 0; e < edges.Length; ++e) {
+					Vector3 p = tetrisCube.transform.TransformPoint(edges[e]);
+					// if (tmp.IndexOf(p) == -1) {
+					// 	tmp.Add(p);
+						points.Add(p);
+						osciyoIndices[e] = osciyoIndex;
+						++osciyoIndex;
+					// }
+				}
+				transform.position = origin;
 
 				tetrisCube.SetPalette (palette);
+				tetrisCube.osciyo = osciyo;
+				tetrisCube.osciyoColorIndices = osciyoIndices;
 
 				_grid [i][j] = tetrisCube;
 			}
 		}
+
+		osciyo.material = particleMaterial;
+		osciyo.Init();
 
 		//
 		_timeToFall = Time.time + _fallDelay;
@@ -327,6 +360,8 @@ public class TetrisGrid : MonoBehaviour
 				}
 			}
 		}
+
+		osciyo.UpdateColor();
 	}
 
 	public void LockShape ()
@@ -344,6 +379,7 @@ public class TetrisGrid : MonoBehaviour
 				_grid [xj] [yi].fill = 10 + _currentShape.rotation[i][j];
 			}
 		}
+		osciyo.UpdateColor();
 	}
 
 	public void RemoveLine()

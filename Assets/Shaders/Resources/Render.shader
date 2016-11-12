@@ -19,7 +19,6 @@
 			
 			sampler2D _MainTex;
 			sampler2D _ShaderPassTexture;
-			sampler2D _EdgeTexture;
 			float4 _Color;
 
 			fixed4 frag (v2f_img i) : SV_Target

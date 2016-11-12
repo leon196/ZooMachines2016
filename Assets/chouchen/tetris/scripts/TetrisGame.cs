@@ -36,7 +36,7 @@ public class TetrisGame : MonoBehaviour
 	private TetrisCube			_tetrisCubePrefab	= null;
 
 	[SerializeField]
-	private Text				_gameOverText		= null;
+	private GameObject				_gameOverText		= null;
 
 	private Dictionary<int, int>	_specialGames	= new Dictionary<int, int> ();
 	private int _uniqueSpecialGames					= 0;
@@ -44,7 +44,7 @@ public class TetrisGame : MonoBehaviour
 
 	void Awake ()
 	{
-		_gameOverText.gameObject.SetActive (false);
+		_gameOverText.SetActive (false);
 	}
 
 	// Use this for initialization

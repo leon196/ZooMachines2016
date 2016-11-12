@@ -4,6 +4,9 @@ public class TetrisCube : MonoBehaviour
 {	
 	private int					_fill		= 0;
 	private TetrisColorPalette	_palette	= null;
+	public Osciyo osciyo;
+	public int[] osciyoColorIndices;
+	private Material mat;
 
 	public int fill
 	{
@@ -25,7 +28,12 @@ public class TetrisCube : MonoBehaviour
 
 	private void UpdateColor ()
 	{
-		Material mat = GetComponent<Renderer> ().material;
+		if (mat == null) {
+			mat = GetComponent<Renderer> ().material;
+		}
 		mat.color = _palette.GetShapeColor (_fill);
+		if (osciyo != null) {
+			osciyo.SetColor(osciyoColorIndices, mat.color);
+		}
 	}
 }
