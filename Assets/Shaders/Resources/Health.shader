@@ -25,6 +25,8 @@
 			float _EdgeCount;
 
 			fixed4 frag (v2f_img i) : SV_Target {
+				// float2 uv = i.uv;
+				// uv.y = 1.0 - uv.y;
 				fixed4 element = tex2D(_MainTex, i.uv);
 				fixed4 position = tex2D(_VertexTexture, i.uv);
 				float2 currentUV = float2(0,0);
@@ -34,6 +36,8 @@
 				float should = step(distance(position, currentTarget), 0.1);
 				// should = lerp(should, 1, step(length(currentTarget), 0.1));
 				element.r += lerp(0, 1, should);
+
+				float loop = step(_EdgeCount, element.r);
 				element.r = fmod(element.r, _EdgeCount);//_ResolutionEdge.x * _ResolutionEdge.y);
 				// element.r = 1.0;
 				// element.gb = 0.0;

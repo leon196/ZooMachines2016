@@ -46,6 +46,16 @@ public class FloatTexture
 		dimension = new Vector2(resolution, resolution);
 		PrintVectorArray(array);
 	}
+	
+	public FloatTexture (Color[] array)
+	{
+		resolution = (int)Utils.GetNearestPowerOfTwo(Mathf.Sqrt(array.Length));
+		texture = new Texture2D(resolution, resolution, TextureFormat.RGBAFloat, false);
+		texture.filterMode = FilterMode.Point;
+		colorArray = new Color[resolution * resolution];
+		dimension = new Vector2(resolution, resolution);
+		PrintColor(array);
+	}
 
 	public void PrintPosition (Mesh[] meshArray)
 	{
