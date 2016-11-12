@@ -18,12 +18,12 @@
 			#include "UnityCG.cginc"
 			
 			sampler2D _MainTex;
-			sampler2D _ElementTexture;
+			sampler2D _ShaderPassTexture;
 			float4 _Color;
 
 			fixed4 frag (v2f_img i) : SV_Target
 			{
-				fixed4 col = tex2D(_MainTex, i.uv);
+				fixed4 col = tex2D(_ShaderPassTexture, i.uv);
 				return col;
 			}
 			ENDCG

@@ -11,6 +11,7 @@ public class LineFontDrawer : MonoBehaviour
     public string textToPreview;
 
     public float scale = 0.01f;
+    public Vector2 anchor;
 
     [Range(0.6f, 20)]
     public float perlinHeight = 1;
@@ -21,7 +22,7 @@ public class LineFontDrawer : MonoBehaviour
 
         Vector2[] fontLines = GetFontLines(textToPreview, lineFont);
 
-        Vector2 start = Vector2.up * 0.3f + Vector2.right * 0.2f;
+        Vector2 start = Vector2.up * anchor.y + Vector2.right * anchor.x - Vector2.right * (textToPreview.Length / 65f);
 
         for (int i = 0; i < fontLines.Length; i += 2)
         {
@@ -164,12 +165,13 @@ public class LineFontDrawer : MonoBehaviour
     void OnRenderObject()
     {
         lineMaterial.SetPass(0);
-        // GL.PushMatrix();
+        GL.PushMatrix();
+        GL.MultMatrix(transform.localToWorldMatrix);
         GL.Begin(GL.LINES);
 
         DrawFontTest();
 
         GL.End();
-        // GL.PopMatrix();
+        GL.PopMatrix();
     }
 }
