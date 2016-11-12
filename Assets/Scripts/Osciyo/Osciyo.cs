@@ -6,9 +6,9 @@ public class Osciyo : MonoBehaviour
 {
 	public int lod = 1;
 	public Material material;
-	public float speed = 0.8f;
-	public float speedNoise = 0.0f;
-	[Range(0,1)] public float damping = 0.2f;
+	public float speed = 0.05f;
+	public float speedNoise = 0.01f;
+	[Range(0,1)] public float damping = 0.7f;
 	private Pass position;
 	private Pass velocity;
 	private Pass element;
