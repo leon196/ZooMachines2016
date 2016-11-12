@@ -13,8 +13,9 @@ public class Osciyo : MonoBehaviour
 	private Pass velocity;
 	private Pass element;
 	private FloatTexture edgeTexture;
-	// private FloatTexture colorTexture;
+	private FloatTexture colorTexture;
 	private Vector3[] edgePositionArray;
+	private Color[] colorArray;
 
 	public void Init ()
 	{
@@ -32,14 +33,14 @@ public class Osciyo : MonoBehaviour
 			// int index = 0;
 			foreach (Vector3 point in edges) {
 				list.Add(t.TransformPoint(point));
-				// list.Add(point);
-				// list.Add(Utils.RandomVector(-10f, 10f));
-				// colorList.Add(rendererArray[r].sharedMaterial.color);
+				colorList.Add(rendererArray[r].material.color);
+				// colorList.Add(new Color(Random.Range(0f,1f),Random.Range(0f,1f),Random.Range(0f,1f)));
         // ++index;
 			}
 			renderer.enabled = false;
 			++r;
 		}
+		colorArray = colorList.ToArray();
 		Init(list);
 	}
 
@@ -47,6 +48,8 @@ public class Osciyo : MonoBehaviour
 	{
 		edgePositionArray = list.ToArray();
 		edgeTexture = new FloatTexture(edgePositionArray);		
+		colorTexture = new FloatTexture(edgeTexture.resolution);
+		colorTexture.PrintColor(colorArray);
 
 		List<GameObject> particles = Utils.CreateParticles(list.Count * lod, material);
 		Mesh[] meshArray = new Mesh[particles.Count];
@@ -102,6 +105,11 @@ public class Osciyo : MonoBehaviour
 			velocity.material.SetTexture("_EdgeTexture", edgeTexture.texture);
 			element.material.SetTexture("_EdgeTexture", edgeTexture.texture);
 			material.SetTexture("_EdgeTexture", edgeTexture.texture);
+
+			position.material.SetTexture("_ColorTexture", colorTexture.texture);
+			velocity.material.SetTexture("_ColorTexture", colorTexture.texture);
+			element.material.SetTexture("_ColorTexture", colorTexture.texture);
+			material.SetTexture("_ColorTexture", colorTexture.texture);
 
 			position.material.SetTexture("_VertexInitialTexture", position.texture.texture);
 			velocity.material.SetTexture("_VertexInitialTexture", position.texture.texture);

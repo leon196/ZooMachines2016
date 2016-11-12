@@ -49,20 +49,21 @@
 				vertex.xyz = tex2Dlod(_VertexTexture, float4(v.texcoord2.xy, 0, 0)).rgb;
 				vertex = mul(_Matrix, vertex);
 				o.vertex = UnityObjectToClipPos(vertex);
-				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+				// o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+				o.uv = v.texcoord2;
 				return o;
 			}
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
 				float4 color = _Color;
-				// float4 element = tex2D(_ElementTexture, i.uv);
+				float4 element = tex2D(_ElementTexture, i.uv);
 
-				// float2 edgeUV = float2(0,0);
-				// edgeUV.x = fmod(element.r, _ResolutionEdge.x) / _ResolutionEdge.x;
-				// edgeUV.y = floor(element.r / _ResolutionEdge.x) / _ResolutionEdge.y;
+				float2 edgeUV = float2(0,0);
+				edgeUV.x = fmod(element.r, _ResolutionEdge.x) / _ResolutionEdge.x;
+				edgeUV.y = floor(element.r / _ResolutionEdge.x) / _ResolutionEdge.y;
 
-				// color *= tex2D(_ColorTexture, edgeUV);
+				color *= tex2D(_ColorTexture, edgeUV);
 				return color;
 			}
 			ENDCG
