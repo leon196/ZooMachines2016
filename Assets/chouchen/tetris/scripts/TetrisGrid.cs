@@ -10,6 +10,8 @@ public class TetrisGrid : MonoBehaviour
 
 	[SerializeField]
 	private float			_fallDelay				= 0f;
+	[SerializeField]
+	private TetrisGame		_tetrisGame				= null;
 
 	private TetrisCube[][]	_grid		  			= null;
 	private TetrisShape		_currentShape 			= null;
@@ -37,8 +39,17 @@ public class TetrisGrid : MonoBehaviour
 
 	private bool			_cleanMidiDelegate		= false;
 
+	public bool 			isInit
+	{
+		get { return _grid != null; }
+	}
+
+	private bool gameIsStop = false;
+
 	public void CreateNewGrid (PlayerID playerId, TetrisColorPalette palette, int width, int height)
 	{
+		Debug.Log ("create new grid");
+
 		// Create Grid Array
 		_grid = new TetrisCube[width][];
 
@@ -78,6 +89,15 @@ public class TetrisGrid : MonoBehaviour
 		_cleanMidiDelegate = true;
 	}
 
+	public void RestartGrid ()
+	{
+		_timeToFall = Time.time + _fallDelay;	
+		gameIsStop = false;
+		AddShape ();
+		//MidiMaster.knobDelegate += knobChanged;
+		//_cleanMidiDelegate = true;
+	}
+
 	public void SetOpponentGrid (TetrisGrid opponentGrid)
 	{
 		_opponentGrid = opponentGrid;
@@ -87,6 +107,9 @@ public class TetrisGrid : MonoBehaviour
 	{
 		TetrisShape shape = null;
 
+		if (gameIsStop == true)
+			return;
+		
 		if (_malusLine > 0) 
 		{
 			AddMalusLine (_malusLine);
@@ -114,6 +137,9 @@ public class TetrisGrid : MonoBehaviour
 		}
 
 		_currentShape			= shape;
+
+		Debug.Log ("shape on " + name + " is set to " + _currentShape);
+
 		_currentShapePosition	= _spawnPosition;
 
 		if (CheckGameOver () == true) 
@@ -124,23 +150,35 @@ public class TetrisGrid : MonoBehaviour
 
 		Redraw ();
 	}
+	bool _magickey = false;
 
 	public void Update ()
 	{
-		if (_gameOver == true)
+		_magickey = MidiMaster.GetKeyDown ((int)0x46);
+
+		if (_gameOver == true || gameIsStop == true)
 			return;
 		
-		if (_currentShape != null) 
-		{
+		if (_currentShape != null) {
 			Fall ();
 			CheckShapeInput ();
+		} else 
+		{
+			//Debug.Log ("shape is null on update " + name);
 		}
+
+		_magickey = false;
 	}
 
 	public void Fall ()
 	{
+		if (gameIsStop == true)
+			return;
+		
 		if (Time.time >= _timeToFall) 
 		{
+			//Debug.Log ("fall on " + name);
+
 			Coord newCoord = new  Coord (_currentShapePosition.x, _currentShapePosition.y-1);
 			if (CheckMove (newCoord) == true) 
 			{
@@ -151,6 +189,7 @@ public class TetrisGrid : MonoBehaviour
 			{
 				LockShape ();
 				_currentShape = null;
+				//Debug.Log ("shape set to null at " + name);
 				RemoveLine ();
 				Redraw ();
 				AddShape ();
@@ -220,16 +259,25 @@ public class TetrisGrid : MonoBehaviour
 
 	public void CheckShapeInput ()
 	{
-		if (MidiMaster.GetKeyDown (_currentShape.rotationKey (_playerId))) {
+		if (_currentShape == null)
+			return;
+		
+		//Debug.Log ("Check input " + _currentShape.rotationKey (_playerId));
+		//if (MidiMaster.GetKeyDown (_currentShape.rotationKey (_playerId))) {
+		if (_magickey == true || _tetrisGame.CheckKeyDown(_currentShape.rotationKey(_playerId)) == true){
+			Debug.Log ("Key press go rotation");
+
+			//Debug.Log ("check rotation");
+
 			if (CheckRotation () == true) {
 				_currentShape.ApplyRotation ();
 				Redraw ();
 			}
-		}
+		}/*
 		else if (MidiMaster.GetKeyDown (_forceFallKey [(int)_playerId])) 
 		{
 			Debug.Log(MidiMaster.GetKey((_forceFallKey[(int)_playerId])));
-		}
+		}*/
 
 	}
 
@@ -244,8 +292,11 @@ public class TetrisGrid : MonoBehaviour
 				int yi = _currentShapePosition.y - i;
 				int xj = _currentShapePosition.x + j;
 
-				if (_grid [xj] [yi].fill > 0)
+				if (_grid [xj] [yi].fill > 0) 
+				{
+					Debug.Log ("colide on " + _grid [xj] [yi]);
 					return true;
+				}
 			}
 		}
 
@@ -362,19 +413,6 @@ public class TetrisGrid : MonoBehaviour
 				}
 			}
 
-			/*
-			int lowerJ = Mathf.Min (lineToDelete.ToArray ());
-
-			for (int j = lowerJ; j < _height-1; j++) 
-			{
-				for (int i = 0; i < _width; i++) 
-				{
-					_grid [i] [j].fill		=	_grid [i] [j + 1].fill;
-					_grid [i] [j + 1].fill	=	0;
-				}
-			}
-			*/
-
 			if (_opponentGrid != null) 
 			{
 				if (lineToDelete.Count == 4) 
@@ -383,6 +421,8 @@ public class TetrisGrid : MonoBehaviour
 					_opponentGrid.SetMalusLines (3);
 				else if (lineToDelete.Count == 2) 
 					_opponentGrid.SetMalusLines (2);
+
+				GameObject.FindObjectOfType<TetrisGame> ().LineRemove (lineToDelete.Count);
 			}
 		}
 	}
@@ -484,5 +524,31 @@ public class TetrisGrid : MonoBehaviour
 			if (_grid [i] [line].fill > 0)
 				return false;
 		return true;
+	}
+
+	public void StopGame ()
+	{
+		Debug.Log ("Stop Game on " + name);
+
+		gameIsStop = true;
+
+		if (_currentShape != null) {
+			for (int i = 0; i < _currentShape.rotation.Length; i++) {
+				for (int j = 0; j < _currentShape.rotation [i].Length; j++) {
+					if (_currentShape.rotation [i] [j] == 0)
+						continue;
+
+					int yi = _currentShapePosition.y - i;
+					int xj = _currentShapePosition.x + j;
+
+					_grid [xj] [yi].fill = 0;
+				}
+			}
+		}
+
+		MidiMaster.knobDelegate -= knobChanged;
+		_cleanMidiDelegate = false;
+
+		_currentShape = null;
 	}
 }
