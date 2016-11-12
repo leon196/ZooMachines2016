@@ -54,6 +54,10 @@ public class TetrisTutorial : MonoBehaviour
 		_movementText.gameObject.SetActive (false);
 		_rotationText.gameObject.SetActive (false);
 		_fallText.gameObject.SetActive (false);
+	}
+	
+	public void Start ()
+	{
 		gameObject.AddComponent<Osciyo>();
 		gameObject.GetComponent<Osciyo>().material = _material;
 	}
@@ -69,10 +73,10 @@ public class TetrisTutorial : MonoBehaviour
 		_midiController = midiControllerGo.AddComponent<MidiController> ();
 		// midiControllerGo.GetComponent<Osciyo>().Init();
 
-		Renderer[] rendererArray = midiControllerGo.GetComponentsInChildren<Renderer>();
-		foreach (Renderer renderer in rendererArray) {
-			renderer.enabled = false;
-		}
+		// Renderer[] rendererArray = midiControllerGo.GetComponentsInChildren<Renderer>();
+		// foreach (Renderer renderer in rendererArray) {
+		// 	renderer.enabled = false;
+		// }
 	}
 
 	public void ConstructTetrisShape (PlayerID playerId, TetrisShapeEnum shapeEnum, TetrisCube cube, TetrisColorPalette palette)

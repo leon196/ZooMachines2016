@@ -13,7 +13,7 @@ public class Osciyo : MonoBehaviour
 	private Pass velocity;
 	private Pass element;
 	private FloatTexture edgeTexture;
-	private FloatTexture colorTexture;
+	// private FloatTexture colorTexture;
 	private Vector3[] edgePositionArray;
 
 	public void Init ()
@@ -25,38 +25,28 @@ public class Osciyo : MonoBehaviour
 		int r = 0;
 		foreach (MeshFilter meshFilter in meshFilterArray) {
 			Mesh mesh = meshFilter.sharedMesh;
+			Renderer renderer = rendererArray[r];
 			Transform t = meshFilter.transform;
 			Vector3[] edges = Draw.GetEdgePointsFromMesh(mesh, 0f);
 			// Draw.Edge[] indices = Draw.GetEdges(mesh);
 			// int index = 0;
 			foreach (Vector3 point in edges) {
 				list.Add(t.TransformPoint(point));
+				// list.Add(point);
+				// list.Add(Utils.RandomVector(-10f, 10f));
 				// colorList.Add(rendererArray[r].sharedMaterial.color);
         // ++index;
 			}
+			renderer.enabled = false;
 			++r;
 		}
-		Vector3[] points = list.ToArray();
-		edgePositionArray = points;
-		edgeTexture = new FloatTexture(edgePositionArray);
-		// colorTexture = new FloatTexture(edgeTexture.resolution);
-		// colorTexture.PrintColor(colorList.ToArray());
-
-		foreach (Renderer renderer in rendererArray) {
-			renderer.enabled = false;
-		}
-		List<GameObject> particles = Utils.CreateParticles(points.Length * lod, material);
-		Mesh[] meshArray = new Mesh[particles.Count];
-		for (int i = 0; i < particles.Count; ++i) {
-			meshArray[i] = particles[i].GetComponent<MeshFilter>().sharedMesh;
-		}
-		Init(meshArray);
+		Init(list);
 	}
 
 	public void Init (List<Vector3> list)
 	{
 		edgePositionArray = list.ToArray();
-		edgeTexture = new FloatTexture(list.ToArray());		
+		edgeTexture = new FloatTexture(edgePositionArray);		
 
 		List<GameObject> particles = Utils.CreateParticles(list.Count * lod, material);
 		Mesh[] meshArray = new Mesh[particles.Count];
@@ -86,6 +76,9 @@ public class Osciyo : MonoBehaviour
 		velocity.material.SetTexture("_VertexInitialTexture", position.result);
 		velocity.material.SetTexture("_VertexTexture", position.result);
 		velocity.material.SetTexture("_ElementTexture", element.result);
+		element.material.SetTexture("_VertexInitialTexture", position.result);
+		element.material.SetTexture("_VertexTexture", position.result);
+		element.material.SetTexture("_ElementTexture", element.result);
 		material.SetTexture("_VertexTexture", position.result);
 		material.SetTexture("_VertexInitialTexture", position.result);
 		material.SetTexture("_VelocityTexture", velocity.result);
@@ -102,7 +95,7 @@ public class Osciyo : MonoBehaviour
 			element.material.SetVector("_Resolution", element.dimension);
 			position.material.SetVector("_ResolutionEdge", edgeTexture.dimension);
 			velocity.material.SetVector("_ResolutionEdge", edgeTexture.dimension);
-			velocity.material.SetVector("_ResolutionEdge", edgeTexture.dimension);
+			element.material.SetVector("_ResolutionEdge", edgeTexture.dimension);
 			material.SetVector("_ResolutionEdge", edgeTexture.dimension);
 
 			position.material.SetTexture("_EdgeTexture", edgeTexture.texture);
@@ -116,27 +109,27 @@ public class Osciyo : MonoBehaviour
 			// material.SetTexture("_ColorTexture", colorTexture.texture);
 
 			// velocity
-			velocity.Update();
-			velocity.material.SetTexture("_VelocityTexture", velocity.result);
 			velocity.material.SetTexture("_VertexTexture", position.result);
 			velocity.material.SetTexture("_ElementTexture", element.result);
 			velocity.material.SetFloat("_GlobalSpeed", speed);
 			velocity.material.SetFloat("_SpeedNoise", speedNoise);
 			velocity.material.SetFloat("_Fade", damping);
+			velocity.Update();
+			velocity.material.SetTexture("_VelocityTexture", velocity.result);
 			material.SetTexture("_VelocityTexture", velocity.result);
 
 			// position
-			position.Update();
-			position.material.SetTexture("_VertexTexture", position.result);
 			position.material.SetTexture("_VelocityTexture", velocity.result);
 			position.material.SetTexture("_ElementTexture", element.result);
+			position.Update();
+			position.material.SetTexture("_VertexTexture", position.result);
 			material.SetTexture("_VertexTexture", position.result);
 
 			// element
-			element.Update();
 			element.material.SetTexture("_VertexTexture", position.result);
-			element.material.SetTexture("_ElementTexture", element.result);
 			element.material.SetTexture("_VelocityTexture", velocity.result);
+			element.Update();
+			element.material.SetTexture("_ElementTexture", element.result);
 			material.SetTexture("_ElementTexture", element.result);
 		}
 	}
