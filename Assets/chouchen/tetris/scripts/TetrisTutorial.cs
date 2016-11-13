@@ -47,7 +47,7 @@ public class TetrisTutorial : MonoBehaviour
 	[SerializeField]
 	private GameObject			_fallText			= null;
 	[SerializeField]
-	private GameObject			_outSyncText 		= null;
+	public GameObject			_outSyncText 		= null;
 
 	private MidiController	_midiController		= null;
 
@@ -164,5 +164,17 @@ public class TetrisTutorial : MonoBehaviour
 		yield return new WaitForSeconds (4f);
 
 		GameObject.FindObjectOfType<TetrisGame> ().SpecialTutorialIsOver ();
+	}
+
+	public void Win (PlayerID win)
+	{
+		
+		_outSyncText.GetComponent<LineFontDrawer> ().textToPreview = "Player " + (1+(int)win) + " win"; 
+
+		_outSyncText.SetActive (true);
+
+		_rotationText.SetActive (false);
+		_movementText.SetActive (false);
+		_fallText.SetActive (false);
 	}
 }

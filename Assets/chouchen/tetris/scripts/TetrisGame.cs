@@ -53,10 +53,23 @@ public class TetrisGame : MonoBehaviour
 		InitializeTutorial ();
 
 		MidiMaster.knobDelegate += knobChanged;
+		MidiMaster.noteOnDelegate += noteOn;
+	}
+
+	public void noteOn (MidiChannel channel, int note, float velocity)
+	{
+		if (_playerOneGrid != null)
+			_playerOneGrid.noteOn (channel, note, velocity);
+
+		if (_playerTwoGrid != null)
+			_playerTwoGrid.noteOn (channel, note, velocity);				
 	}
 
 	public void knobChanged (MidiChannel channel, int  knobNumber, float knobValue)
 	{
+		if (knobNumber == (int)0x6A)
+			UnityEngine.SceneManagement.SceneManager.LoadScene (0);
+
 		if (_playerOneGrid != null)
 			_playerOneGrid.knobChanged (channel, knobNumber, knobValue);
 
@@ -99,6 +112,14 @@ public class TetrisGame : MonoBehaviour
 		InitializeGame ();
 	}
 
+	public void Update ()
+	{
+		if (MidiMaster.GetKeyDown ((int)0x42)) 
+		{
+			Debug.Log ("works");
+		}
+	}
+
 	private void InitializeGame ()
 	{
 		if (_playerOneGrid.isInit == false) {
@@ -119,7 +140,7 @@ public class TetrisGame : MonoBehaviour
 	{
 		_lineCount++;
 
-		if (_lineCount >= 1) 
+		if (_lineCount >= 4) 
 		{
 			_lineCount = 0;
 
@@ -170,9 +191,9 @@ public class TetrisGame : MonoBehaviour
 			_playerTwoSpecialGrid.Reset ();
 
 			if (player == PlayerID.PlayerOne)
-				_playerTwoGrid.SetMalusLines (2);
+				_playerTwoGrid.SetMalusLines (3);
 			else
-				_playerOneGrid.SetMalusLines (2);
+				_playerOneGrid.SetMalusLines (3);
 
 			_specialGridRoot.gameObject.SetActive (false);
 			_gridRoot.gameObject.SetActive (false);
@@ -182,15 +203,25 @@ public class TetrisGame : MonoBehaviour
 		}
 	}
 
+	/*
 	public bool CheckKeyDown (int key)
 	{
 		if (MidiMaster.GetKeyDown (key))
 			return true;
 		return false;
 	}
+	*/
 
 	void OnDestroy()
 	{
 		MidiMaster.knobDelegate = null;
+		MidiMaster.noteOnDelegate = null;
+	}
+
+
+	public void GameOver (PlayerID winner)
+	{
+		_tutorial.gameObject.SetActive (true);
+		_tutorial.Win (winner);
 	}
 }

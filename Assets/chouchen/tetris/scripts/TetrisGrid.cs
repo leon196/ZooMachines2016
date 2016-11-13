@@ -173,6 +173,7 @@ public class TetrisGrid : MonoBehaviour
 		if (CheckGameOver () == true) 
 		{
 			_gameOver = true;
+			_tetrisGame.GameOver ((_playerId == PlayerID.PlayerOne ? PlayerID.PlayerTwo : PlayerID.PlayerOne));
 			Debug.Log ("Game Over");
 		}
 
@@ -229,6 +230,9 @@ public class TetrisGrid : MonoBehaviour
 
 	public void ForceFall ()
 	{
+		if (_currentShape == null || gameIsStop == true || _gameOver == true)
+			return;
+		
 		Coord newCoord = new Coord (_currentShapePosition.x, _currentShapePosition.y);
 		for (int j = _currentShapePosition.y; j >= 0; j--) 
 		{
@@ -242,7 +246,6 @@ public class TetrisGrid : MonoBehaviour
 				break;		
 			}
 		}
-
 	}
 
 	public void knobChanged (MidiChannel channel, int  knobNumber, float knobValue)
@@ -255,6 +258,9 @@ public class TetrisGrid : MonoBehaviour
 
 	public void MoveInputDetected (float knobValue)
 	{
+		if (_currentShape == null)
+			return;
+		
 		if (_currentHorizontalKnob < 0f) 
 		{
 			_currentHorizontalKnob = knobValue;
@@ -289,24 +295,27 @@ public class TetrisGrid : MonoBehaviour
 	{
 		if (_currentShape == null)
 			return;
-		
-		//Debug.Log ("Check input " + _currentShape.rotationKey (_playerId));
-		//if (MidiMaster.GetKeyDown (_currentShape.rotationKey (_playerId))) {
-		if (_magickey == true || _tetrisGame.CheckKeyDown(_currentShape.rotationKey(_playerId)) == true){
-			Debug.Log ("Key press go rotation");
 
-			//Debug.Log ("check rotation");
+		if (pressRotation) 
+		{
+			pressRotation = false;
 
-			if (CheckRotation () == true) {
+			if (CheckRotation () == true) 
+			{
 				_currentShape.ApplyRotation ();
 				Redraw ();
 			}
-		}/*
-		else if (MidiMaster.GetKeyDown (_forceFallKey [(int)_playerId])) 
-		{
-			Debug.Log(MidiMaster.GetKey((_forceFallKey[(int)_playerId])));
-		}*/
+		}
+	}
 
+	bool pressRotation = false;
+	public void noteOn(MidiChannel channel, int note, float velocity)
+	{
+		if (_currentShape == null || gameIsStop == true || _gameOver == true)
+			return;
+
+		if (note == _currentShape.rotationKey (_playerId))
+			pressRotation = true;
 	}
 
 	public bool CheckGameOver ()
@@ -482,6 +491,9 @@ public class TetrisGrid : MonoBehaviour
 
 	public bool CheckMove (Coord newCoord)
 	{
+		if (_currentShape == null)
+			return false;
+		
 		for (int i = 0; i < _currentShape.rotation.Length; i++) 
 		{
 			for (int j = 0; j < _currentShape.rotation[i].Length; j++) 

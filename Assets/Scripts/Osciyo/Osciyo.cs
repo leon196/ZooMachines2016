@@ -7,7 +7,7 @@ public class Osciyo : MonoBehaviour
 	public int lod = 1;
 	public Material material;
 	public float speed = 0.05f;
-	public float speedNoise = 0.01f;
+	public float speedNoise = 0.001f;
 	[Range(0,1)] public float damping = 0.7f;
 	private Pass position;
 	private Pass velocity;
@@ -17,10 +17,17 @@ public class Osciyo : MonoBehaviour
 	private Vector3[] edgePositionArray;
 	private Color[] colorArray;
 	private int edgeCount;
+	private float timeStart = 0f;
+	private float timeDelay = 2f;
 
 	void Start ()
 	{
 		// Init();
+	}
+
+	void OnEnable ()
+	{
+		timeStart = Time.time;
 	}
 
 	public void Init ()
@@ -103,6 +110,11 @@ public class Osciyo : MonoBehaviour
 		// material.SetMatrix("_Matrix", transform.localToWorldMatrix);
 
 		if (position != null) {
+				
+			float ratio = Mathf.Sin(Mathf.Clamp01((Time.time - timeStart) / timeDelay) * Mathf.PI);
+			speedNoise = 0.1f * ratio;
+			speed = 0.05f + ratio * 0.2f;
+
 			position.material.SetVector("_Resolution", position.dimension);
 			position.material.SetVector("_ResolutionEdge", edgeTexture.dimension);
 			position.material.SetTexture("_EdgeTexture", edgeTexture.texture);

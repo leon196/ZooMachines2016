@@ -212,6 +212,9 @@ public class TetrisSpecialGrid : MonoBehaviour
 
 	public void MoveInputDetected (float knobValue, int index)
 	{
+		if (_shapePositions == null)
+			return;
+		
 		if (index == 0 || index == 2)
 			knobValue = 1f - knobValue;
 		
@@ -414,6 +417,9 @@ public class TetrisSpecialGrid : MonoBehaviour
 
 	public bool CheckMove (Coord newCoord, int index)
 	{
+		if (_currentShapes == null)
+			return false;
+		
 		for (int i = 0; i < _currentShapes[index].rotation.Length; i++) 
 		{
 			for (int j = 0; j < _currentShapes[index].rotation[i].Length; j++) 
